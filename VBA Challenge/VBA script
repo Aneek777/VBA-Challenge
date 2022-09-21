@@ -1,0 +1,105 @@
+Sub MultipleYearStockData()
+
+Dim ws As Worksheet
+
+For Each ws In Sheets
+
+
+
+ws.Range("I1").Value = "Ticker"
+ws.Range("J1").Value = "Yearly Change"
+ws.Range("K1").Value = "Percent Change"
+ws.Range("L1").Value = "Total Stock Volume"
+
+ws.Range("P1").Value = "Ticker"
+ws.Range("Q1").Value = "Value"
+ws.Range("O2").Value = "Greatest & Increse"
+ws.Range("O3").Value = "Greatest & Decrease"
+ws.Range("O4").Value = "Greatest Total Volume"
+
+Ticker = " "
+Dim Ticker_volume As Double
+Ticker_volume = 0
+
+Dim Lastrow As Long
+Dim i As Long
+Dim j As Integer
+j = 0
+
+Lastrow = ws.Cells(Rows.Count, 1).End(xlUp).Row
+
+Dim open_price As Double
+open_price = 0
+Dim close_price As Double
+close_price = 0
+Dim price_change As Double
+price_change = 0
+Dim price_change_percent As Double
+price_change_percent = 0
+Dim total_volume As Double
+total_volume = 0
+
+Dim TickerRow As Long
+
+TickerRow = 2
+
+For i = 2 To Lastrow
+
+    If ws.Cells(i + 1, 1).Value <> ws.Cells(i, 1).Value Then
+        Ticker = ws.Cells(i, 1).Value
+        total_volume = total_volume + ws.Cells(i, 7).Value
+        If total_volume = 0 Then
+            ws.Range("i" & 2 + j).Value = Ticker
+            ws.Range("j" & 2 + j).Value = 0
+            ws.Range("k" & 2 + j).Value = "%" & 0
+            ws.Range("L" & 2 + j).Value = 0
+        
+        Else
+        
+            If ws.Cells(TickerRow, 3) = 0 Then
+                For t = TickerRow To i
+                    If ws.Cells(t, 3).Value <> 0 Then
+                        TickerRow = t
+                    
+                     Exit For
+                
+                    
+                    End If
+                
+                Next t
+        
+        End If
+    
+    price_change = ws.Cells(i, 6) - ws.Cells(TickerRow, 3)
+    price_change_percent = price_change / ws.Cells(TickerRow, 3)
+    TickerRow = i + 1
+    
+    
+            ws.Range("i" & 2 + j).Value = ws.Cells(i, 1).Value
+            ws.Range("j" & 2 + j).Value = price_change
+       If price_change > 0 Then
+          ws.Range("j" & 2 + j).Interior.ColorIndex = 4
+     End If
+     
+    If price_change < 0 Then
+          ws.Range("j" & 2 + j).Interior.ColorIndex = 3
+      End If
+    
+ 
+        ws.Range("k" & 2 + j).Value = price_change_percent
+        ws.Range("L" & 2 + j).Value = total_volume
+    End If
+    total_volume = 0
+    price_colume = 0
+    j = j + 1
+    Else
+        total_volume = total_volume + ws.Cells(i, 7).Value
+
+
+End If
+
+Next i
+
+Next ws
+
+End Sub
